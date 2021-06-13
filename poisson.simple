@@ -1,0 +1,74 @@
+float norm(Vector x) {
+    return (x*x)^(0.5);
+}
+
+/**
+ * Solve a positive, symmetric linear system using
+ * the method of conjugate gradients.
+ * Reference: Iterative Methods for Sparse Linear Systems, Y. Saad
+ *
+ * @input Matrix A Linear system
+ * @input Vector b Right hand side
+ * @returns Vector Solution to linear system.
+ */
+Vector CG(Matrix A, Vector b) {
+    Vector x = zeros(rows(A));
+    Vector r = b;
+    Vector p = r;
+    int nu = rows(A);
+    int i = 0;
+
+    while (norm(r) > 0 && i < nu) {
+        println(" -- Iteration ", i + 1, "/", nu, " (residual: ", norm(r), ") -- ");
+        Vector Ap = A*p;
+        float alpha = (r*r) / (Ap*p);
+        x = x + alpha * p;
+        Vector r_old = r;
+        r = r - alpha * Ap;
+        float beta = (r*r) / (r_old*r_old);
+        p = r + beta * p;
+
+        ++i;
+    }
+    println("Final residual: ", norm(r));
+
+    return x;
+}
+
+void main() {
+     /* Solve the 1D Poisson problem:
+        - grad^2 u = f
+        with Dirichlet conditions on both sides.
+        We discretize in space using finite differences,
+        apply a simple forcing function of 1 in the middle and 0 elsewhere.
+        Then, solve iteratively with CG iteration.
+     */
+
+     int N = 7;
+     float h = 1.0 / (N + 1.0);
+
+     /* Create the Poisson operator */
+     Matrix A = zeros(N,N);
+     for (int i = 0; i < N; ++i) {
+         A[i, i] = -2.0 / (h^2);
+         if (i > 0) {
+             A[i, i - 1] = 1.0 / (h^2);
+         }
+         if (i < (N - 1)) {
+             A[i, i + 1] = 1.0 / (h^2);
+         }
+     }
+
+     /* Create load vector -- dirac delta at middle.
+        Note that the solution to this should just be the Green's function */
+     Vector b = zeros(N);
+     b[3] = 1.0;
+
+     /* Solve iteratively with conjugate gradients */
+     Vector u = CG(-A, b);
+
+     println(" == Poisson operator == ");
+     println(A);
+     println(" == Solved soln == ");
+     println(u);
+}

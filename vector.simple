@@ -1,0 +1,9 @@
+void main() {
+    Vector a = ones(5);
+    println("a", a);
+
+    Vector b = ones(5) * 2;
+    println("b", b);
+
+    println("a+b", a+b);
+}

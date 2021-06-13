@@ -1,0 +1,42 @@
+/* This is a simulation of the predator-prey equations */
+
+float alpha = (2.0/3.0);
+float beta = (4.0/3.0);
+float gamma = 1.0;
+float delta = 1.0;
+
+/* Define the derivatives */
+Vector derivative(Vector state) {
+    float prey = state[0];
+    float predator = state[1];
+
+    float dpreydt = alpha*prey - beta*prey*predator;
+    float dpredatordt = delta*prey*predator - gamma*predator;
+
+    Vector derivatives = ones(2);
+    derivatives[0] = dpreydt;
+    derivatives[1] = dpredatordt;
+
+    return derivatives;
+}
+
+/* RK4 timestepper */
+Vector rk4(float dt, Vector yn, Vector -> Vector f) {
+    Vector k1 = f(yn);
+    Vector k2 = f(yn + (dt/2) * k1);
+    Vector k3 = f(yn + (dt/2) * k2);
+    Vector k4 = f(yn + dt * k3);
+    return yn + (dt/6) * (k1 + 2*k2 + 2*k3 + k4);
+}
+
+void main() {
+    int N = 20;
+    float dt = 0.1;
+    Vector state = ones(2);
+
+    for (int i = 0; i < N; ++i) {
+        println("T=", i*dt, " prey=", state[0], " predator=", state[1]);
+        state = rk4(dt, state, derivative);
+    }
+    println("T=", N*dt, " prey=", state[0], " predator=", state[1]);
+}

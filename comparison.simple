@@ -1,0 +1,21 @@
+void main() {
+    Vector x = linspace(0,1,10);
+    Vector y1 = 1.0 - x;
+    Vector y2 = x;
+
+    println("y1", y1);
+    println("y2", y2);
+    println("Where is y1 larger than y2?");
+    println(y1>y2);
+    println("There are ", sum(y1>y2), " elements in y1 that are larger than y2");
+}
+
+/*
+Expected output:
+
+y1[ 1e+00, 8.8888888888888884e-01, 7.7777777777777779e-01, 6.6666666666666674e-01, 5.5555555555555558e-01, 4.4444444444444442e-01, 3.3333333333333337e-01, 2.2222222222222232e-01, 1.1111111111111116e-01, 0e+00 ]
+y2[ 0e+00, 1.111111111111111e-01, 2.2222222222222221e-01, 3.3333333333333331e-01, 4.4444444444444442e-01, 5.5555555555555558e-01, 6.6666666666666663e-01, 7.7777777777777768e-01, 8.8888888888888884e-01, 1e+00 ]
+Where is y1 larger than y2?
+[ True, True, True, True, True, False, False, False, False, False ]
+There are 5 elements in y1 that are larger than y2
+*/
